@@ -1,0 +1,4 @@
+#pragma once
+
+#define APP_GIT_COMMIT "@GIT_COMMIT@"
+#define APP_GIT_DESCRIBE "@GIT_DESCRIBE@"

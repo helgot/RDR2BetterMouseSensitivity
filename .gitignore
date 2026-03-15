@@ -1,0 +1,9 @@
+# Ignore emacs temporary files
+*~ 
+tmp/
+.vs/
+bin/
+build/
+.cache/
+.vscode/
+tasklist

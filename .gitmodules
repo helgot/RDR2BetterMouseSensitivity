@@ -1,0 +1,6 @@
+[submodule "third-party/imgui"]
+	path = third-party/imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "third-party/minhook"]
+	path = third-party/minhook
+	url = https://github.com/TsudaKageyu/minhook.git
