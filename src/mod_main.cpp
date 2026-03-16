@@ -14,6 +14,7 @@
 #include "version.h"
 
 ModConfig Config;
+extern bool MenuVisible;
 
 static GraphicsAPI ConfiguredAPI = GRAPHICS_API_UNKNOWN;
 
@@ -22,6 +23,8 @@ void InitMod()
     InitLogger(LOG_LEVEL_DEBUG);
     Config = LoadConfig();
     SaveConfig(&Config);
+
+    MenuVisible = Config.ShowMenuAtStartUp;
 
     OutputDebugStringA("Mouse Sensitivity Mod initialized\n");
     // Log level test:
