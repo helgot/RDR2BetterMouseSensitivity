@@ -8,9 +8,9 @@ ModConfig DefaultConfig()
 {
     ModConfig Config;
     Config.FirstPersonSensitivity = 1.0f;
-    Config.FirstPersonAimScale = 1.0f;
+    Config.FirstPersonADSScale = 1.0f;
     Config.ThirdPersonSensitivity = 1.0f;
-    Config.ThirdPersonAimScale = 1.0f;
+    Config.ThirdPersonADSScale = 1.0f;
     Config.FirstPersonFovSensitivityScaling = false;
     Config.ShowMenuAtStartUp = true;
     Config.UserInterfaceEnabled = true;
@@ -42,17 +42,17 @@ ModConfig LoadConfig()
             {
                 Config.FirstPersonSensitivity = strtof(Value, NULL);
             }
-            else if (strcmp(Key, "FirstPersonAimScale") == 0)
+            else if (strcmp(Key, "FirstPersonADSScale") == 0)
             {
-                Config.FirstPersonAimScale = strtof(Value, NULL);
+                Config.FirstPersonADSScale = strtof(Value, NULL);
             }
             else if (strcmp(Key, "ThirdPersonSensitivity") == 0)
             {
                 Config.ThirdPersonSensitivity = strtof(Value, NULL);
             }
-            else if (strcmp(Key, "ThirdPersonAimScale") == 0)
+            else if (strcmp(Key, "ThirdPersonADSScale") == 0)
             {
-                Config.ThirdPersonAimScale = strtof(Value, NULL);
+                Config.ThirdPersonADSScale = strtof(Value, NULL);
             }
             else if (strcmp(Key, "FirstPersonFovSensitivityScaling") == 0)
             {
@@ -90,10 +90,10 @@ bool SaveConfig(const ModConfig *Config)
 
     fprintf(File, "FirstPersonSensitivity=%f\n",
             Config->FirstPersonSensitivity);
-    fprintf(File, "FirstPersonAimScale=%f\n", Config->FirstPersonAimScale);
+    fprintf(File, "FirstPersonADSScale=%f\n", Config->FirstPersonADSScale);
     fprintf(File, "ThirdPersonSensitivity=%f\n",
             Config->ThirdPersonSensitivity);
-    fprintf(File, "ThirdPersonAimScale=%f\n", Config->ThirdPersonAimScale);
+    fprintf(File, "ThirdPersonADSScale=%f\n", Config->ThirdPersonADSScale);
     fprintf(File, "FirstPersonFovSensitivityScaling=%s\n",
             Config->FirstPersonFovSensitivityScaling ? "true" : "false");
     fprintf(File, "ShowMenuAtStartUp=%s\n",

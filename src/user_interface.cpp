@@ -80,21 +80,23 @@ static void DrawControlConfigHelper()
         ImGui::EndTooltip();
     }
 
-    ImGui::SliderFloat("First-Person Aim Scale", &Config.FirstPersonAimScale,
+    ImGui::SliderFloat("First-Person ADS Scale", &Config.FirstPersonADSScale,
                        MinSliderValue, MaxSilderValue);
     if (ImGui::IsItemHovered())
     {
         ImGui::BeginTooltip();
-        ImGui::Text("First-person aim scale (overrides the in-game setting).");
+        ImGui::Text("First-person ADS scale multiplier (overrides the in-game "
+                    "setting).");
         ImGui::EndTooltip();
     }
 
-    ImGui::SliderFloat("Third-Person Aim Scale", &Config.ThirdPersonAimScale,
+    ImGui::SliderFloat("Third-Person ADS scale", &Config.ThirdPersonADSScale,
                        MinSliderValue, MaxSilderValue);
     if (ImGui::IsItemHovered())
     {
         ImGui::BeginTooltip();
-        ImGui::Text("Third-person aim scale (overrides the in-game setting).");
+        ImGui::Text("Third-person ADS scale mulitplier (overrides the in-game "
+                    "setting).");
         ImGui::EndTooltip();
     }
 

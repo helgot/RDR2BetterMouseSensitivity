@@ -7,9 +7,9 @@
 struct ModConfig
 {
     float FirstPersonSensitivity;
-    float FirstPersonAimScale;
+    float FirstPersonADSScale;
     float ThirdPersonSensitivity;
-    float ThirdPersonAimScale;
+    float ThirdPersonADSScale;
     bool FirstPersonFovSensitivityScaling;
     bool ShowMenuAtStartUp;
     bool UserInterfaceEnabled;

@@ -139,7 +139,7 @@ static __int64 __fastcall ThirdPersonMouseSensitivity(int64_t a1, int64_t a2,
 
     float aiming = *(float *)(a1 + 48); // 1.0f if aimed, 0.0f if not.
                                         // (interpolated in transition)
-    float AimingScale = 1.0f + aiming * (Config.ThirdPersonAimScale - 1.0f);
+    float AimingScale = 1.0f + aiming * (Config.ThirdPersonADSScale - 1.0f);
     float ScaleProduct =
         Config.ThirdPersonSensitivity * AimingScale * kThirdPersonQuakeScale;
 
@@ -182,7 +182,7 @@ static void __fastcall FirstPersonMouseSensitivity(__int64 a1, __int64 a2,
 
     bool is_aiming = (*(BYTE *)(a2 + 211) & 8) == 0x8;
     float AimingScale =
-        1.0f + (is_aiming ? 1.0f : 0.0f) * (Config.FirstPersonAimScale - 1.0f);
+        1.0f + (is_aiming ? 1.0f : 0.0f) * (Config.FirstPersonADSScale - 1.0f);
 
     float Fov = *(float *)FovFloatAddr;
 
@@ -192,7 +192,7 @@ static void __fastcall FirstPersonMouseSensitivity(__int64 a1, __int64 a2,
     {
         FovScale = Fov / kBaseFirstPersonFov;
     }
-    float ScaleProduct = Config.FirstPersonAimScale * AimingScale *
+    float ScaleProduct = Config.FirstPersonADSScale * AimingScale *
                          kFirstPersonQuakeScale / FovScale;
 
     // Fix scaling to be consistent across non-scoped and scoped modes.
