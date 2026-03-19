@@ -15,7 +15,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd,
                                                              WPARAM wParam,
                                                              LPARAM lParam);
 
-extern bool MenuVisible;
+extern bool MENU_VISIBLE;
 
 // Vulkan function pointers:
 PFN_vkQueuePresentKHR OriginalVkQueuePresent = nullptr;
@@ -89,7 +89,7 @@ Hooked_vkGetDeviceProcAddr(VkDevice device, const char *pName);
 static LRESULT CALLBACK Hooked_WndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                        LPARAM lPARAM);
 
-bool VulkanHookInstall()
+bool vulkan_hook_install()
 {
     HMODULE VulkanHandle = GetModuleHandle("vulkan-1.dll");
     if (!VulkanHandle)
@@ -116,7 +116,7 @@ bool VulkanHookInstall()
     return true;
 }
 
-void VulkanHookShutdown()
+void vulkan_hook_shutdown()
 {
     DeinitializeImGui();
     MH_DisableHook((LPVOID)OriginalVkCreateInstance);
@@ -321,6 +321,7 @@ static void InitializeImGui()
     IO.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     IO.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     IO.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+    IO.MouseDrawCursor = MENU_VISIBLE;
 
     ImGui::StyleColorsDark();
     {
@@ -493,7 +494,7 @@ static LRESULT CALLBACK Hooked_WndProc(HWND Window, UINT Message, WPARAM WParam,
         }
     }
 
-    HandleInput();
+    handle_input();
 
     return CallWindowProc(OriginalWindowProc, Window, Message, WParam, LParam);
 }
@@ -512,13 +513,13 @@ static VkResult VKAPI_PTR Hooked_vkQueuePresentKHR(
     }
 
     if (ImguiInitialized && (pPresentInfo->waitSemaphoreCount > 0) &&
-        MenuVisible)
+        MENU_VISIBLE)
     {
         VkPresentInfoKHR ModifiedPresentInfo = *pPresentInfo;
         ImGui_ImplVulkan_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
-        RenderUI(); // Submit Imgui draw commands.
+        render_ui(); // Submit Imgui draw commands.
         ImGui::Render();
 
         ImDrawData *DrawData = ImGui::GetDrawData();

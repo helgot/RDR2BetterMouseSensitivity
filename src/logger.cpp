@@ -6,15 +6,13 @@
 
 #include <windows.h>
 
-static FILE *LogFilePtr = NULL;
-static LogLevel CurrentLogLevel = LOG_LEVEL_INFO;
-static const char *kLogFileName = "RDR2BetterMouseSensitivity.log";
+static FILE *log_file_ptr = NULL;
+static LogLevel current_log_level = LOG_LEVEL_INFO;
+static const char *LOG_FILE_NAME = "RDR2BetterMouseSensitivity.log";
 
-static const char *LogLevelStrings[] = {"DEBUG", "INFO", "WARNING", "ERROR"};
-
-const char *LogLevelToString(LogLevel Level)
+const char *log_level_to_string(LogLevel level)
 {
-    switch (Level)
+    switch (level)
     {
     case LOG_LEVEL_DEBUG:
         return "DEBUG";
@@ -29,7 +27,7 @@ const char *LogLevelToString(LogLevel Level)
     }
 }
 
-LogLevel StringToLogLevel(const char *s)
+LogLevel string_to_log_level(const char *s)
 {
     if (strcmp(s, "DEBUG") == 0)
         return LOG_LEVEL_DEBUG;
@@ -43,23 +41,23 @@ LogLevel StringToLogLevel(const char *s)
     return LOG_LEVEL_UNKNOWN;
 }
 
-bool InitLogger(LogLevel Level)
+bool init_logger(LogLevel level)
 {
-    LogFilePtr = fopen(kLogFileName, "w+");
-    CurrentLogLevel = Level;
-    return LogFilePtr != NULL;
+    log_file_ptr = fopen(LOG_FILE_NAME, "w+");
+    current_log_level = level;
+    return log_file_ptr != NULL;
 }
 
-void ShutdownLogger()
+void shutdown_logger()
 {
-    if (LogFilePtr)
+    if (log_file_ptr)
     {
-        fclose(LogFilePtr);
-        LogFilePtr = NULL;
+        fclose(log_file_ptr);
+        log_file_ptr = NULL;
     }
 }
 
-size_t GetTime(char *Buffer, size_t BufferSize)
+size_t get_time(char *Buffer, size_t BufferSize)
 {
     std::time_t now = std::time(nullptr);
     std::tm ltm;
@@ -67,30 +65,30 @@ size_t GetTime(char *Buffer, size_t BufferSize)
     return strftime(Buffer, BufferSize, "%d-%m-%Y %H:%M:%S", &ltm);
 }
 
-void LogMessage(LogLevel Level, const char *Format, ...)
+void log_message(LogLevel level, const char *Format, ...)
 {
-    char TimeBuffer[50];
-    char FormattedMessage[256];
-    char MessageBuffer[512];
-    va_list Args;
+    char time_string_buffer[50];
+    char formatted_message[256];
+    char message_buffer[512];
+    va_list args;
 
-    if (Level < CurrentLogLevel)
+    if (level < current_log_level)
     {
         return;
     }
 
     // Parse format args.
-    va_start(Args, Format);
-    vsnprintf(FormattedMessage, sizeof(FormattedMessage), Format, Args);
-    va_end(Args);
+    va_start(args, Format);
+    vsnprintf(formatted_message, sizeof(formatted_message), Format, args);
+    va_end(args);
 
-    GetTime(TimeBuffer, sizeof(TimeBuffer));
-    snprintf(MessageBuffer, sizeof(MessageBuffer), "[%-7s][%s]: %s",
-             LogLevelToString(Level), TimeBuffer, FormattedMessage);
-    OutputDebugStringA(MessageBuffer);
-    if (LogFilePtr)
+    get_time(time_string_buffer, sizeof(time_string_buffer));
+    snprintf(message_buffer, sizeof(message_buffer), "[%-7s][%s]: %s",
+             log_level_to_string(level), time_string_buffer, formatted_message);
+    OutputDebugStringA(message_buffer);
+    if (log_file_ptr)
     {
-        fprintf(LogFilePtr, "%s\n", MessageBuffer);
-        fflush(LogFilePtr);
+        fprintf(log_file_ptr, "%s\n", message_buffer);
+        fflush(log_file_ptr);
     }
 }

@@ -2,25 +2,25 @@
 
 #include "mod_main.hpp"
 
-DWORD WINAPI InitializeModThread(LPVOID Module)
+DWORD WINAPI intialize_mod_thread(LPVOID module)
 {
-    InitMod();
+    init_mod();
     return 0;
 }
 
-BOOL APIENTRY DllMain(HMODULE Module, DWORD Reason, LPVOID Reserved)
+BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved)
 {
-    switch (Reason)
+    switch (reason)
     {
     case DLL_PROCESS_ATTACH: {
-        DisableThreadLibraryCalls(Module);
-        CreateThread(NULL, 0, InitializeModThread, NULL, 0, NULL);
+        DisableThreadLibraryCalls(module);
+        CreateThread(NULL, 0, intialize_mod_thread, NULL, 0, NULL);
         OutputDebugStringA("RDR2MouseSensitivity.asi attach.\n");
     }
     break;
     case DLL_PROCESS_DETACH: {
         OutputDebugStringA("RDR2MouseSensitivity.asi detach.\n");
-        ShutdownMod();
+        shutdown_mod();
     }
     break;
     default: {

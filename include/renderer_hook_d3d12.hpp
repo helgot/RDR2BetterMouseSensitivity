@@ -1,4 +1,4 @@
 #pragma once
 
-bool D3D12HookInstall();
-void D3D12HookShutdown();
+bool d3d12_hook_install();
+void d3d12_hook_shutdown();

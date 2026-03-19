@@ -6,16 +6,16 @@
 #include "mod_config.hpp"
 #include "version.h"
 
-extern ModConfig Config;
+extern ModConfig CONFIG;
 
-bool MenuVisible;
+bool MENU_VISIBLE;
 
-static void DrawControlConfigHelper();
-static void DrawConfigIOHelper();
+static void draw_config_helper();
+static void draw_config_io_helper();
 
-void RenderUI()
+void render_ui()
 {
-    if (!MenuVisible)
+    if (!MENU_VISIBLE)
         return;
 
     char Title[100];
@@ -23,43 +23,44 @@ void RenderUI()
             "RDR2BetterMouseSensitivity by Helgot, Version: %s (Toggle: F10)",
             APP_GIT_DESCRIBE);
     ImGui::Begin(Title);
-    DrawControlConfigHelper();
-    DrawConfigIOHelper();
+    draw_config_helper();
+    draw_config_io_helper();
     ImGui::End();
 }
 
-void HandleInput()
+void handle_input()
 {
     static bool wasF10Pressed = false;
     bool isF10Pressed = GetAsyncKeyState(VK_F10) & 0x8000;
 
     if (isF10Pressed && !wasF10Pressed)
     {
-        MenuVisible = !MenuVisible;
+        MENU_VISIBLE = !MENU_VISIBLE;
 
         // Show/hide the mouse cursor along with the menu
         ImGuiIO &io = ImGui::GetIO();
-        io.MouseDrawCursor = MenuVisible;
+        io.MouseDrawCursor = MENU_VISIBLE;
     }
     wasF10Pressed = isF10Pressed;
 }
 
-static void DrawControlConfigHelper()
+static void draw_config_helper()
 {
     constexpr float MinSliderValue = 0.0f;
     constexpr float MaxSilderValue = 10.0f;
     ImGui::Checkbox("First-Person FOV Scaling",
-                    &Config.FirstPersonFovSensitivityScaling);
+                    &CONFIG.first_person_fov_sensitivity_scaling);
     if (ImGui::IsItemHovered())
     {
         ImGui::BeginTooltip();
         ImGui::Text("Scale the first-person sensitivity with FOV."
-                    "Default is true.");
+                    "By default the game scales the senvitivity with fov in "
+                    "first-person.");
         ImGui::EndTooltip();
     }
 
     ImGui::SliderFloat("First-Person Sensitivity",
-                       &Config.FirstPersonSensitivity, MinSliderValue,
+                       &CONFIG.first_person_sensitivity_scale, MinSliderValue,
                        MaxSilderValue);
     if (ImGui::IsItemHovered())
     {
@@ -70,7 +71,7 @@ static void DrawControlConfigHelper()
     }
 
     ImGui::SliderFloat("Third-Person Sensitivity",
-                       &Config.ThirdPersonSensitivity, MinSliderValue,
+                       &CONFIG.third_person_sensitivity_scale, MinSliderValue,
                        MaxSilderValue);
     if (ImGui::IsItemHovered())
     {
@@ -80,7 +81,7 @@ static void DrawControlConfigHelper()
         ImGui::EndTooltip();
     }
 
-    ImGui::SliderFloat("First-Person ADS Scale", &Config.FirstPersonADSScale,
+    ImGui::SliderFloat("First-Person ADS Scale", &CONFIG.first_person_ads_scale,
                        MinSliderValue, MaxSilderValue);
     if (ImGui::IsItemHovered())
     {
@@ -90,7 +91,7 @@ static void DrawControlConfigHelper()
         ImGui::EndTooltip();
     }
 
-    ImGui::SliderFloat("Third-Person ADS scale", &Config.ThirdPersonADSScale,
+    ImGui::SliderFloat("Third-Person ADS scale", &CONFIG.third_person_ads_scale,
                        MinSliderValue, MaxSilderValue);
     if (ImGui::IsItemHovered())
     {
@@ -100,7 +101,7 @@ static void DrawControlConfigHelper()
         ImGui::EndTooltip();
     }
 
-    ImGui::Checkbox("Show Menu on Start-up", &Config.ShowMenuAtStartUp);
+    ImGui::Checkbox("Show Menu on Start-up", &CONFIG.show_menu_at_start_up);
     if (ImGui::IsItemHovered())
     {
         ImGui::BeginTooltip();
@@ -110,7 +111,7 @@ static void DrawControlConfigHelper()
     }
 
     ImGui::Checkbox("User Interface Enabled (Requires Restart)",
-                    &Config.UserInterfaceEnabled);
+                    &CONFIG.user_interface_enabled);
     if (ImGui::IsItemHovered())
     {
         ImGui::BeginTooltip();
@@ -121,25 +122,25 @@ static void DrawControlConfigHelper()
     }
 }
 
-static void DrawConfigIOHelper()
+static void draw_config_io_helper()
 {
     ImGui::Separator();
     if (ImGui::Button("Save Config"))
     {
         // Update the main config and save.
-        SaveConfig(&Config);
+        save_config(&CONFIG);
     }
     ImGui::SameLine();
     if (ImGui::Button("Load Config"))
     {
         // Reload from disk into the manager, then update our editable copy.
-        Config = LoadConfig();
+        CONFIG = load_config();
     }
     ImGui::SameLine();
     if (ImGui::Button("Load Defaults"))
     {
         // Create a default config and update our editable copy.
-        Config = DefaultConfig();
+        CONFIG = default_config();
     }
     ImGui::Separator();
 }

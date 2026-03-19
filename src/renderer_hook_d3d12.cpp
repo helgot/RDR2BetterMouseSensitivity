@@ -17,7 +17,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd,
                                                              WPARAM wParam,
                                                              LPARAM lParam);
 
-extern bool MenuVisible;
+extern bool MENU_VISIBLE;
 
 typedef HRESULT(WINAPI *D3D12CreateDevicePtr)(IUnknown *, D3D_FEATURE_LEVEL,
                                               REFIID, void **);
@@ -84,7 +84,7 @@ static HRESULT WINAPI Hooked_D3D12CreateDevice(
 static LRESULT CALLBACK Hooked_WndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                        LPARAM lParam);
 
-bool D3D12HookInstall()
+bool d3d12_hook_install()
 {
     WNDCLASSEX WindowClass = {
         sizeof(WNDCLASSEX),    CS_CLASSDC, DefWindowProc, 0L,   0L,
@@ -224,7 +224,7 @@ bool D3D12HookInstall()
     return true;
 }
 
-void D3D12HookShutdown()
+void d3d12_hook_shutdown()
 {
     // Wait for the GPU to be done with all resources.
     if (CommandQueue && Fence && FenceEvent)
@@ -330,6 +330,7 @@ static void InitializeImGui(IDXGISwapChain3 *pSwapChain)
     ImGuiIO &IO = ImGui::GetIO();
     IO.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     IO.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+    IO.MouseDrawCursor = MENU_VISIBLE;
 
     ImGui::StyleColorsDark();
 
@@ -482,7 +483,7 @@ static LRESULT CALLBACK Hooked_WndProc(HWND WindowHandle, UINT Message,
         }
     }
 
-    HandleInput();
+    handle_input();
 
     return CallWindowProc(OriginalWindowProc, WindowHandle, Message, WParam,
                           LParam);
@@ -532,7 +533,7 @@ HRESULT WINAPI Hooked_Present(IDXGISwapChain3 *pSwapChain, UINT SyncInterval,
         }
     }
 
-    if (ImguiInitialized && MenuVisible)
+    if (ImguiInitialized && MENU_VISIBLE)
     {
         ImGui_ImplDX12_NewFrame();
         ImGui_ImplWin32_NewFrame();
@@ -540,7 +541,7 @@ HRESULT WINAPI Hooked_Present(IDXGISwapChain3 *pSwapChain, UINT SyncInterval,
         // Add an assertion to catch the problem immediately
         assert(IO.DisplaySize.x > 0.0f && IO.DisplaySize.y > 0.0f);
         ImGui::NewFrame();
-        RenderUI();
+        render_ui();
         ImGui::Render();
 
         UINT BufferIdx = pSwapChain->GetCurrentBackBufferIndex();

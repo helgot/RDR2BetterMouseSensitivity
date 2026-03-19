@@ -1,4 +1,4 @@
 #pragma once
 
-bool InstallGameHooks();
-void UninstallGameHooks();
+bool install_game_hooks();
+void uninstall_game_hooks();

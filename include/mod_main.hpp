@@ -1,4 +1,4 @@
 #pragma once
 
-void InitMod();
-void ShutdownMod();
+void init_mod();
+void shutdown_mod();

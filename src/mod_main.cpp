@@ -13,18 +13,18 @@
 
 #include "version.h"
 
-ModConfig Config;
-extern bool MenuVisible;
+ModConfig CONFIG;
+extern bool MENU_VISIBLE;
 
-static GraphicsAPI ConfiguredAPI = GRAPHICS_API_UNKNOWN;
+static GraphicsAPI CONFIGURED_API = GRAPHICS_API_UNKNOWN;
 
-void InitMod()
+void init_mod()
 {
-    InitLogger(LOG_LEVEL_DEBUG);
-    Config = LoadConfig();
-    SaveConfig(&Config);
+    init_logger(LOG_LEVEL_DEBUG);
+    CONFIG = load_config();
+    save_config(&CONFIG);
 
-    MenuVisible = Config.ShowMenuAtStartUp;
+    MENU_VISIBLE = CONFIG.show_menu_at_start_up;
 
     OutputDebugStringA("Mouse Sensitivity Mod initialized\n");
     // Log level test:
@@ -48,19 +48,19 @@ void InitMod()
         LOG_INFO("Initialized MinHook.");
     }
 
-    InstallGameHooks();
+    install_game_hooks();
 
-    if (Config.UserInterfaceEnabled)
+    if (CONFIG.user_interface_enabled)
     {
-        ConfiguredAPI = GetGraphicsApiFromSettingsFile();
-        switch (ConfiguredAPI)
+        CONFIGURED_API = get_graphics_api_from_settings_file();
+        switch (CONFIGURED_API)
         {
         case GRAPHICS_API_VULKAN: {
-            VulkanHookInstall();
+            vulkan_hook_install();
         }
         break;
         case GRAPHICS_API_DX12: {
-            D3D12HookInstall();
+            d3d12_hook_install();
         }
         break;
         default:
@@ -69,19 +69,19 @@ void InitMod()
     }
 }
 
-void ShutdownMod()
+void shutdown_mod()
 {
 
-    if (Config.UserInterfaceEnabled)
+    if (CONFIG.user_interface_enabled)
     {
-        switch (ConfiguredAPI)
+        switch (CONFIGURED_API)
         {
         case GRAPHICS_API_VULKAN: {
-            VulkanHookShutdown();
+            vulkan_hook_shutdown();
         }
         break;
         case GRAPHICS_API_DX12: {
-            D3D12HookShutdown();
+            d3d12_hook_shutdown();
         }
         break;
         default:
@@ -89,7 +89,7 @@ void ShutdownMod()
         }
     }
 
-    UninstallGameHooks();
+    uninstall_game_hooks();
 
     if (MH_Uninitialize() != MH_OK)
     {
@@ -99,5 +99,5 @@ void ShutdownMod()
     {
         LOG_DEBUG("MinHook uninitialized.");
     }
-    ShutdownLogger();
+    shutdown_logger();
 }

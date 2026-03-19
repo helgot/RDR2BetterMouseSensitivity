@@ -4,104 +4,106 @@
 
 static const char *kConfigFileName = "RDR2BetterMouseSensitivity.ini";
 
-ModConfig DefaultConfig()
+ModConfig default_config()
 {
-    ModConfig Config;
-    Config.FirstPersonSensitivity = 1.0f;
-    Config.FirstPersonADSScale = 1.0f;
-    Config.ThirdPersonSensitivity = 1.0f;
-    Config.ThirdPersonADSScale = 1.0f;
-    Config.FirstPersonFovSensitivityScaling = false;
-    Config.ShowMenuAtStartUp = true;
-    Config.UserInterfaceEnabled = true;
-    Config.LogLevel = LOG_LEVEL_INFO;
-    return Config;
+    ModConfig config;
+    config.first_person_sensitivity_scale = 1.0f;
+    config.first_person_ads_scale = 1.0f;
+    config.third_person_sensitivity_scale = 1.0f;
+    config.third_person_ads_scale = 1.0f;
+    config.first_person_fov_sensitivity_scaling = true;
+    config.show_menu_at_start_up = true;
+    config.user_interface_enabled = true;
+    config.log_level = LOG_LEVEL_INFO;
+    return config;
 }
 
-ModConfig LoadConfig()
+ModConfig load_config()
 {
-    ModConfig Config = DefaultConfig();
-    FILE *File = fopen(kConfigFileName, "r");
+    ModConfig CONFIG = default_config();
+    FILE *file = fopen(kConfigFileName, "r");
 
-    if (!File)
+    if (!file)
     {
         LOG_ERROR("%s: Failed to read config file, using default settings.",
                   __func__);
-        return Config;
+        return CONFIG;
     }
 
-    char Line[128];
-    char Key[64];
-    char Value[64];
+    char line[128];
+    char key[64];
+    char value[64];
 
-    while (fgets(Line, sizeof(Line), File))
+    while (fgets(line, sizeof(line), file))
     {
-        if (sscanf(Line, "%63[^=]=%63s", Key, Value) == 2)
+        if (sscanf(line, "%63[^=]=%63s", key, value) == 2)
         {
-            if (strcmp(Key, "FirstPersonSensitivity") == 0)
+            if (strcmp(key, "first_person_sensitivity_scale") == 0)
             {
-                Config.FirstPersonSensitivity = strtof(Value, NULL);
+                CONFIG.first_person_sensitivity_scale = strtof(value, NULL);
             }
-            else if (strcmp(Key, "FirstPersonADSScale") == 0)
+            else if (strcmp(key, "first_person_ads_scale") == 0)
             {
-                Config.FirstPersonADSScale = strtof(Value, NULL);
+                CONFIG.first_person_ads_scale = strtof(value, NULL);
             }
-            else if (strcmp(Key, "ThirdPersonSensitivity") == 0)
+            else if (strcmp(key, "third_person_sensitivity_scale") == 0)
             {
-                Config.ThirdPersonSensitivity = strtof(Value, NULL);
+                CONFIG.third_person_sensitivity_scale = strtof(value, NULL);
             }
-            else if (strcmp(Key, "ThirdPersonADSScale") == 0)
+            else if (strcmp(key, "third_person_ads_scale") == 0)
             {
-                Config.ThirdPersonADSScale = strtof(Value, NULL);
+                CONFIG.third_person_ads_scale = strtof(value, NULL);
             }
-            else if (strcmp(Key, "FirstPersonFovSensitivityScaling") == 0)
+            else if (strcmp(key, "first_person_fov_sensitivity_scaling") == 0)
             {
-                Config.FirstPersonFovSensitivityScaling =
-                    (strcmp(Value, "true") == 0);
+                CONFIG.first_person_fov_sensitivity_scaling =
+                    (strcmp(value, "true") == 0);
             }
-            else if (strcmp(Key, "ShowMenuAtStartUp") == 0)
+            else if (strcmp(key, "show_menu_at_start_up") == 0)
             {
-                Config.ShowMenuAtStartUp = (strcmp(Value, "true") == 0);
+                CONFIG.show_menu_at_start_up = (strcmp(value, "true") == 0);
             }
-            else if (strcmp(Key, "UserInterfaceEnabled") == 0)
+            else if (strcmp(key, "user_interface_enabled") == 0)
             {
-                Config.UserInterfaceEnabled = (strcmp(Value, "true") == 0);
+                CONFIG.user_interface_enabled = (strcmp(value, "true") == 0);
             }
-            else if (strcmp(Key, "LogLevel") == 0)
+            else if (strcmp(key, "log_level") == 0)
             {
-                LogLevel Level = StringToLogLevel(Value);
-                Config.LogLevel =
-                    (Level == LOG_LEVEL_UNKNOWN) ? LOG_LEVEL_INFO : Level;
+                LogLevel level = string_to_log_level(value);
+                CONFIG.log_level =
+                    (level == LOG_LEVEL_UNKNOWN) ? LOG_LEVEL_INFO : level;
             }
         }
     }
-    fclose(File);
-    return Config;
+    fclose(file);
+    return CONFIG;
 }
 
-bool SaveConfig(const ModConfig *Config)
+bool save_config(const ModConfig *CONFIG)
 {
-    FILE *File = fopen(kConfigFileName, "w");
+    FILE *file = fopen(kConfigFileName, "w");
 
-    if (!File)
+    if (!file)
     {
         return false;
     }
 
-    fprintf(File, "FirstPersonSensitivity=%f\n",
-            Config->FirstPersonSensitivity);
-    fprintf(File, "FirstPersonADSScale=%f\n", Config->FirstPersonADSScale);
-    fprintf(File, "ThirdPersonSensitivity=%f\n",
-            Config->ThirdPersonSensitivity);
-    fprintf(File, "ThirdPersonADSScale=%f\n", Config->ThirdPersonADSScale);
-    fprintf(File, "FirstPersonFovSensitivityScaling=%s\n",
-            Config->FirstPersonFovSensitivityScaling ? "true" : "false");
-    fprintf(File, "ShowMenuAtStartUp=%s\n",
-            Config->ShowMenuAtStartUp ? "true" : "false");
-    fprintf(File, "UserInterfaceEnabled=%s\n",
-            Config->UserInterfaceEnabled ? "true" : "false");
-    fprintf(File, "LogLevel=%s\n", LogLevelToString(Config->LogLevel));
-    fclose(File);
+    fprintf(file, "first_person_sensitivity_scale=%f\n",
+            CONFIG->first_person_sensitivity_scale);
+    fprintf(file, "first_person_ads_scale=%f\n",
+            CONFIG->first_person_ads_scale);
+    fprintf(file, "third_person_sensitivity_scale=%f\n",
+            CONFIG->third_person_sensitivity_scale);
+    fprintf(file, "third_person_ads_scale=%f\n",
+            CONFIG->third_person_ads_scale);
+    fprintf(file, "first_person_fov_sensitivity_scaling=%s\n",
+            CONFIG->first_person_fov_sensitivity_scaling ? "true" : "false");
+    fprintf(file, "show_menu_at_start_up=%s\n",
+            CONFIG->show_menu_at_start_up ? "true" : "false");
+    fprintf(file, "user_interface_enabled=%s\n",
+            CONFIG->user_interface_enabled ? "true" : "false");
+    fprintf(file, "log_level=%s\n", log_level_to_string(CONFIG->log_level));
+    fclose(file);
 
     return true;
 }

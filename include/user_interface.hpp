@@ -1,4 +1,5 @@
 #pragma once
 
-void RenderUI();
-void HandleInput();
+void init_ui();
+void render_ui();
+void handle_input();

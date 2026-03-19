@@ -1,4 +1,4 @@
 #pragma once
 
-bool VulkanHookInstall();
-void VulkanHookShutdown();
+bool vulkan_hook_install();
+void vulkan_hook_shutdown();

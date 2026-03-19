@@ -6,44 +6,44 @@
 
 #include "logger.hpp"
 
-static char *ReadFileToString(const wchar_t *filepath);
+static char *read_file_into_buffer(const wchar_t *filepath);
 
-GraphicsAPI GetGraphicsApiFromSettingsFile()
+GraphicsAPI get_graphics_api_from_settings_file()
 {
-    GraphicsAPI Result = GRAPHICS_API_UNKNOWN;
-    PWSTR DocumentsPath = NULL;
+    GraphicsAPI result = GRAPHICS_API_UNKNOWN;
+    PWSTR documents_path = NULL;
 
     if (SUCCEEDED(
-            SHGetKnownFolderPath(FOLDERID_Documents, 0, NULL, &DocumentsPath)))
+            SHGetKnownFolderPath(FOLDERID_Documents, 0, NULL, &documents_path)))
     {
-        wchar_t SettingsFilePath[MAX_PATH];
+        wchar_t settings_file_path[MAX_PATH];
 
         swprintf(
-            SettingsFilePath, MAX_PATH,
+            settings_file_path, MAX_PATH,
             L"%s\\Rockstar Games\\Red Dead Redemption 2\\Settings\\system.xml",
-            DocumentsPath);
+            documents_path);
 
-        CoTaskMemFree(DocumentsPath);
+        CoTaskMemFree(documents_path);
 
         LOG_DEBUG("%s: Reading settings file at %ws", __func__,
-                  SettingsFilePath);
+                  settings_file_path);
 
-        char *SettingsFileContent = ReadFileToString(SettingsFilePath);
+        char *settings_file_content = read_file_into_buffer(settings_file_path);
 
-        if (!SettingsFileContent)
+        if (!settings_file_content)
         {
             LOG_DEBUG("%s: Failed to read settings file.", __func__);
             return GRAPHICS_API_UNKNOWN;
         }
 
-        if (strstr(SettingsFileContent, "kSettingAPI_Vulkan"))
+        if (strstr(settings_file_content, "kSettingAPI_Vulkan"))
         {
-            Result = GRAPHICS_API_VULKAN;
+            result = GRAPHICS_API_VULKAN;
             LOG_DEBUG("%s: Vulkan API configured in settings file.", __func__);
         }
-        else if (strstr(SettingsFileContent, "kSettingAPI_DX12"))
+        else if (strstr(settings_file_content, "kSettingAPI_DX12"))
         {
-            Result = GRAPHICS_API_DX12;
+            result = GRAPHICS_API_DX12;
             LOG_DEBUG("%s: DX12 API configured in settings file.", __func__);
         }
         else
@@ -53,17 +53,17 @@ GraphicsAPI GetGraphicsApiFromSettingsFile()
                 __func__);
         }
 
-        free(SettingsFileContent);
+        free(settings_file_content);
     }
     else
     {
         LOG_ERROR("%s: Could not find user Documents folder.", __func__);
     }
 
-    return Result;
+    return result;
 }
 
-static char *ReadFileToString(const wchar_t *filepath)
+static char *read_file_into_buffer(const wchar_t *filepath)
 {
     FILE *file = _wfopen(filepath, L"rb");
     if (!file)

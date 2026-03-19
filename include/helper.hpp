@@ -7,4 +7,4 @@ enum GraphicsAPI
     GRAPHICS_API_UNKNOWN
 };
 
-GraphicsAPI GetGraphicsApiFromSettingsFile();
+GraphicsAPI get_graphics_api_from_settings_file();
